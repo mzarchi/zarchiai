@@ -38,7 +38,8 @@ export default async function (message) {
     const { days, hours } = daysAndHoursSinceCreation();
     const description =
       `Writer, Content Researcher: @mhzarchi\n` +
-      `Created: 2021/02/10 (Age: ${days} days, ${hours} hours)`;
+      `Created: 2021/02/10 (AD), 1399/11/22 (PC)\n` +
+      `Channel Age: ${days} days, ${hours} hours`;
 
     try {
       await api.setChatDescription({
