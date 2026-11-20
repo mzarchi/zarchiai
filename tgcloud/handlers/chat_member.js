@@ -2,7 +2,7 @@
 import { api, db } from 'sdk';
 import { eq } from 'sdk/db';
 import { memberLogs } from '../schema.js';
-import { ADMIN_CHAT_ID, LOG_CHANNEL_ID } from '../lib/config.js';
+import { LOG_CHANNEL_ID } from '../lib/config.js';
 
 function getTehranDateTime(dateInput = new Date()) {
   const date = new Intl.DateTimeFormat('en-CA', {
