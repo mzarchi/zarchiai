@@ -1,49 +1,60 @@
+import { api, db } from 'sdk';
+import { memberLogs } from '../schema.js';
+import { ADMIN_CHAT_ID } from '../lib/config.js';
 
-import { api } from 'sdk';
+const TARGET_CHANNEL_ID = '@MohammadZarchi';
 
-async function sendMessage(chatId, text) {
-    return api.sendMessage({
-        chat_id: chatId,
-        text
+const CREATED_UNIX = 1612969454;
+
+function daysAndHoursSinceCreation() {
+  const nowUnix = Math.floor(Date.now() / 1000);
+  const diffSeconds = nowUnix - CREATED_UNIX;
+  const totalHours = Math.floor(diffSeconds / 3600);
+  const days = Math.floor(totalHours / 24);
+  const hours = totalHours % 24;
+  return { days, hours };
+}
+
+export default async function (message) {
+  if (message.from?.id !== ADMIN_CHAT_ID) return;
+  if (typeof message.text !== 'string') return;
+
+  const text = message.text.trim();
+
+  if (text === '/count') {
+    const allRows = await db
+      .select({ userId: memberLogs.userId })
+      .from(memberLogs)
+      .all();
+    const uniqueUsers = new Set(allRows.map((r) => r.userId)).size;
+    await api.sendMessage({
+      chat_id: ADMIN_CHAT_ID,
+      text: `Unique users in DB: ${uniqueUsers}\nTotal records: ${allRows.length}`,
     });
-}
+    return;
+  }
 
-async function handleMessage(message) {
-    const chatId = message.chat.id;
-    const html = message.text;
+  if (text === '/updatebio') {
+    const { days, hours } = daysAndHoursSinceCreation();
+    const description =
+      `Writer, Content Researcher: @mhzarchi\n` +
+      `Created: 2021/02/10 (Age: ${days} days, ${hours} hours)`;
 
-    if (!html) {
-        await sendMessage(
-            chatId,
-            'Please send your HTML code as a text message.'
-        );
-        return;
-    }
-
-    if (html.length > 50000) {
-        await sendMessage(
-            chatId,
-            'HTML content is too large. Please send a smaller document.'
-        );
-        return;
-    }
-
-    // Widget creation will be implemented here.
-    await sendMessage(
-        chatId,
-        'HTML received successfully.'
-    );
-}
-
-export default async function handler(message) {
     try {
-        await handleMessage(message);
-    } catch (error) {
-        console.error('Handler error:', error);
-
-        await sendMessage(
-            message.chat.id,
-            'An error occurred while processing your HTML.'
-        );
+      await api.setChatDescription({
+        chat_id: TARGET_CHANNEL_ID,
+        description,
+      });
+      await api.sendMessage({
+        chat_id: ADMIN_CHAT_ID,
+        text: `Channel bio updated successfully.\n\n${description}`,
+      });
+    } catch (err) {
+      await api.sendMessage({
+        chat_id: ADMIN_CHAT_ID,
+        text: `Failed to update bio: ${String(err)}`,
+      });
     }
+    return;
+  }
 }
