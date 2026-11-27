@@ -36,10 +36,17 @@ export default async function (message) {
 
   if (text === '/updatebio') {
     const { days, hours } = daysAndHoursSinceCreation();
+
+    const formattedDays = days.toLocaleString('en-US'); // 1,234
+    const channelAge =
+      hours === 0
+        ? `${formattedDays} days`
+        : `${formattedDays} days, ${hours} hours`;
+
     const description =
-      `Writer, Content Researcher: @mhzarchi\n` +
+      `Content Researcher & Writer: @mhzarchi\n` +
       `Created: 2021/02/10 (AD), 1399/11/22 (PC)\n` +
-      `Channel Age: ${days} days, ${hours} hours`;
+      `Channel Age: ${channelAge}`;
 
     try {
       await api.setChatDescription({

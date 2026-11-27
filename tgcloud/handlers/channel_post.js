@@ -7,6 +7,7 @@ function daysAndHoursSinceCreation() {
     const CREATED_UNIX = 1612969454; // 2021-02-10 18:34:14 (Tehran)
     const nowUnix = Math.floor(Date.now() / 1000);
     const totalHours = Math.floor((nowUnix - CREATED_UNIX) / 3600);
+
     return {
         days: Math.floor(totalHours / 24),
         hours: totalHours % 24,
@@ -18,11 +19,19 @@ export default async function (channelPost) {
     const text = channelPost.text.trim();
 
     if (text !== '/updatebio') return;
+
     const { days, hours } = daysAndHoursSinceCreation();
+
+    const formattedDays = days.toLocaleString('en-US'); // 1,234
+    const channelAge =
+        hours === 0
+            ? `${formattedDays} days`
+            : `${formattedDays} days, ${hours} hours`;
+
     const description =
-        `Writer, Content Researcher: @mhzarchi\n` +
+        `Content Researcher & Writer: @mhzarchi\n` +
         `Created: 2021/02/10 (AD), 1399/11/22 (PC)\n` +
-        `Channel Age: ${days} days, ${hours} hours`;
+        `Channel Age: ${channelAge}`;
 
     try {
         await api.setChatDescription({
