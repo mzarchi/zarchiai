@@ -245,4 +245,4 @@ For details about the tgcloud SDK and project runtime, see [docs/tgcloud-sdk.md]
 
 ## Author
 
-Developed by [@mhzarchi](https://github.com/mzarchi).
+Developed by [@mhzarchi](https://t.me/mhzarchi).
