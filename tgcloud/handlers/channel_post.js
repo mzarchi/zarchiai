@@ -22,16 +22,16 @@ export default async function (channelPost) {
 
     const { days, hours } = daysAndHoursSinceCreation();
 
-    const formattedDays = days.toLocaleString('en-US'); // 1,234
-    const channelAge =
+    const formattedDays = days.toLocaleString('en-US'); // 1,745
+    const uptime =
         hours === 0
             ? `${formattedDays} days`
-            : `${formattedDays} days, ${hours} hours`;
+            : `${formattedDays} days · ${hours} hours`;
 
     const description =
-        `Content Researcher & Writer: @mhzarchi\n` +
-        `Created: 2021/02/10 (AD), 1399/11/22 (PC)\n` +
-        `Channel Age: ${channelAge}`;
+        `Researcher & Writer · @mhzarchi\n` +
+        `Online since 2021/02/10 (1399/11/22)\n` +
+        `Uptime: ${uptime}`;
 
     try {
         await api.setChatDescription({
